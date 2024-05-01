@@ -1,24 +1,28 @@
 #!/usr/bin/python3
-"""Flask app to generate html list of all states from storage"""
-from flask import Flask, render_template
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep  1 14:42:23 2020
+@author: Robinson Montes
+"""
 from models import storage
-app = Flask('web_flask')
-app.url_map.strict_slashes = False
-
-
-@app.route('/cities_by_states')
-def list_of_states():
-    """Render as html alphabetical list of states and cities in each state
-    from `storage`"""
-    states = storage.all('State')
-    return render_template('8-cities_by_states.html', states=states)
+from models.state import State
+from flask import Flask, render_template
+app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def teardown_db(*args, **kwargs):
-    """Close database or file storage"""
+def appcontext_teardown(self):
+    """use storage for fetching data from the storage engine
+    """
     storage.close()
 
 
-if __name__ == "__main__":
+@app.route('/cities_by_states', strict_slashes=False)
+def state_info():
+    """Display a HTML page inside the tag BODY"""
+    return render_template('8-cities_by_states.html',
+                           states=storage.all(State))
+
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
