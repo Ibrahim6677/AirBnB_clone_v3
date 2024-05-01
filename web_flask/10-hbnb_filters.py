@@ -1,29 +1,24 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep  1 14:42:23 2020
-@author: Robinson Montes
-"""
-from models import storage
-from models.state import State
-from models.amenity import Amenity
+"""Flask app to generate html page containing popdown menu of states/cities"""
 from flask import Flask, render_template
-app = Flask(__name__)
+from models import storage
+app = Flask('web_flask')
+app.url_map.strict_slashes = False
+
+
+@app.route('/hbnb_filters')
+def display_filters():
+    """Generate page with popdown menu of states/cities"""
+    states = storage.all('State')
+    amenities = storage.all('Amenity')
+    return render_template('10-hbnb_filters.html',
+                           states=states, amenities=amenities)
 
 
 @app.teardown_appcontext
-def appcontext_teardown(self):
-    """use storage for fetching data from the storage engine
-    """
+def teardown_db(*args, **kwargs):
+    """Close database or file storage"""
     storage.close()
-
-
-@app.route('/hbnb_filters', strict_slashes=False)
-def state_id():
-    """Display a HTML page inside the tag BODY"""
-    return render_template('10-hbnb_filters.html',
-                           states=storage.all(State),
-                           amenities=storage.all(Amenity))
 
 
 if __name__ == '__main__':
