@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 """app module to create API"""
 import os
-from flask import Flask, Blueprint, jsonify, make_response
-from models import storage
-from api.v1.views import app_views
+
+from flask import Blueprint, Flask, jsonify, make_response
 from flask_cors import CORS
+
+from api.v1.views import app_views
+from models import storage
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -26,4 +28,3 @@ def not_found(e):
 if __name__ == "__main__":
     app.run(host=os.getenv('HBNB_API_HOST', '0.0.0.0'),
             port=int(os.getenv('HBNB_API_PORT', '5000')), threaded=True)
-
