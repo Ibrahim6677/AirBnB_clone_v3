@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """places_amenities.py"""
 import os
-from api.v1.views import app_views
-from flask import abort, jsonify, make_response, request
 from models import storage
+from api.v1.views import app_views
 from models.amenity import Amenity
 from models.place import Place
+from flask import abort, jsonify, make_response, request
 
 
 @app_views.route('/places/<string:place_id>/amenities', methods=['GET'],

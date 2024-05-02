@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """states.py"""
 
-from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
+
+from api.v1.views import app_views
 from models import storage
 from models.state import State
 
@@ -11,7 +12,7 @@ from models.state import State
 def get_states():
     """get state information for all states"""
     states = []
-    for state in storage.all("State").values():
+    for state in storage.all(State).values():
         states.append(state.to_dict())
     return jsonify(states)
 
