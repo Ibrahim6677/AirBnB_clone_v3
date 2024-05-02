@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 """This module defines a class User"""
-from sqlalchemy import Column, String # type: ignore
-from sqlalchemy.orm import relationship # type: ignore
+from sqlalchemy import Column, String  # type: ignore
+from sqlalchemy.orm import relationship  # type: ignore
 
-from models import storage_type
-from models.base_model import Base, BaseModel
+from models.base_model import storage_type, BaseModel, Base
 
 
 class User(BaseModel, Base):
