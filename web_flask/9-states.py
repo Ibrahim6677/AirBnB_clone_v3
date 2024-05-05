@@ -1,36 +1,48 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep  1 14:42:23 2020
-@author: Robinson Montes
-"""
+""" Starts a Flash Web Application """
 from models import storage
 from models.state import State
+from os import environ
 from flask import Flask, render_template
 app = Flask(__name__)
+# app.jinja_env.trim_blocks = True
+# app.jinja_env.lstrip_blocks = True
 
 
 @app.teardown_appcontext
-def appcontext_teardown(self):
-    """use storage for fetching data from the storage engine
-    """
+def close_db(error):
+    """ Remove the current SQLAlchemy Session """
     storage.close()
 
 
 @app.route('/states', strict_slashes=False)
-def state_info():
-    """Display a HTML page inside the tag BODY"""
-    return render_template('7-states_list.html',
-                           states=storage.all(State))
+@app.route('/states/<id>', strict_slashes=False)
+def states_state(id=""):
+    """ displays a HTML page with a list of cities by states """
+    states = storage.all(State).values()
+    states = sorted(states, key=lambda k: k.name)
+    found = 0
+    state = ""
+    cities = []
 
+    for i in states:
+        if id == i.id:
+            state = i
+            found = 1
+            break
+    if found:
+        states = sorted(state.cities, key=lambda k: k.name)
+        state = state.name
 
-@app.route('/states/<string:id>', strict_slashes=False)
-def state_id(id=None):
-    """Display a HTML page inside the tag BODY"""
+    if id and not found:
+        found = 2
+
     return render_template('9-states.html',
-                           states=storage.all(State)
-                           .get('State.{}'.format(id)))
+                           state=state,
+                           array=states,
+                           found=found)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    """ Main Function """
     app.run(host='0.0.0.0', port=5000)
